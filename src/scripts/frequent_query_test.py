@@ -11,10 +11,10 @@ import pickle
 #os.chdir("..")
 #os.chdir("..")
 #os.chdir("..")
-#feature_count=136
+feature_count=136
 rankerDict=queryRankers()
 
-feature_count=64
+#feature_count=64
 learner = retrieval_system.ListwiseLearningSystem(feature_count, '-w random -c comparison.ProbabilisticInterleave -r ranker.ProbabilisticRankingFunction -s 3 -d 0.1 -a 0.01')
 user_model = environment.CascadeUserModel('--p_click 0:0.0,1:1 --p_stop 0:0.0,1:0.0')
 evaluation = evaluation.NdcgEval()
