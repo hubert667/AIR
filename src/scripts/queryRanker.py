@@ -7,6 +7,7 @@ import retrieval_system, environment, evaluation, query
 from queryRankers import *
 
 #set parameters:
+
 feature_count = 64    #136 for MS-dataset
 minFreqCount = 200     #derived from histogram
 iterationCount = 1000    #1000 to 10000 should be enough
@@ -49,3 +50,4 @@ pickle.dump(BestRanker, open( "QueryData/"+name+".data", "wb" ) )
 test = pickle.load( open( "QueryData/"+name+".data", "rb" ) )
 print test.query_ranker.keys()
 print test.query_ranker.values()
+
