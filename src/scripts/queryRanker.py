@@ -27,7 +27,7 @@ print "found "+ str(len(HighFreqQueries)) + " high frequency queries"
 #build the query-ranker dictionary
 BestRanker = queryRankers()
 
-user_model = environment.CascadeUserModel('--p_click 0:0.0,1:1 --p_stop 0:0.0,1:0.0')
+user_model = environment.CascadeUserModel('--p_click 0:0.0,1:0.2,2:0.0,3:0.0,4:0.0,5:1.0,6:1.0,7:1.0 --p_stop 0:0.0,1:1.0,2:0.0,3:0.0,4:0.0,5:1.0,6:1.0,7:1.0')
 #evaluation = evaluation.NdcgEval()
 #test_queries = query.load_queries(sys.argv[2], feature_count)
 print "Read in training and testing queries"
