@@ -40,9 +40,14 @@ class QueryRanker():
         #test_queries = query.load_queries(sys.argv[2], feature_count)
         print "Read in training and testing queries"
         #for every query learn the best ranker and save it to the dictionary
+        iter=0
         for highQuery in HighFreqQueries:
+            sys.stdout.write('\r'+str(iter*100/len(HighFreqQueries))+"%")
+            sys.stdout.flush()
+            iter=iter+1
             for i in xrange(self.rankersPerQuery):
                 learner = retrieval_system.ListwiseLearningSystem(self.feature_count, '-w random -c comparison.ProbabilisticInterleave -r ranker.ProbabilisticRankingFunction -s 3 -d 0.1 -a 0.01')
+                BestRanker.addInitRank(highQuery.get_qid(),learner.get_solution().w)
                 q = highQuery
                 for t in range(self.iterationCount):
                     l = learner.get_ranked_list(q)
@@ -50,6 +55,8 @@ class QueryRanker():
                     s = learner.update_solution(c)
                     print evaluation2.evaluate_all(s, test_queries)
                 BestRanker.add(highQuery.get_qid(),learner.get_solution().w)
+                BestRanker.addList(highQuery.get_qid(),l)
+                BestRanker.addEval(highQuery.get_qid(),e)
         #save the dictionary to a file ('bestRanker.p')
         paths=self.path_train.split('/')
         name=paths[1]

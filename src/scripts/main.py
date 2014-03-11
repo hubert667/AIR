@@ -55,9 +55,11 @@ if dataset == 'yandex':
     path_validate = None
     click = '--p_click 0:0.0,1:0.2,2:0.4,3:0.8,4:1.0 --p_stop 0:0.0,1:0.0,2:0.0,3:0.0,4:0.0'
     
+
 print 'Using the', dataset, 'dataset'
 
 Q = QueryRanker(path_train, path_test, feature_count, arguments.minfreqcount, arguments.iterations, arguments.rankersperquery, click)
+
 Q.queryRanker()
  
 print "-- Creating clusters --"

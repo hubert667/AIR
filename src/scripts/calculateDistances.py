@@ -35,6 +35,6 @@ for query in queryRankers.query_ranker:
     queryDistances[query]=distances
     prevRank=rankers[0]
     
-print queryDistances.keys()
+
 print queryDistances.values()
 
