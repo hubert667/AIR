@@ -192,7 +192,7 @@ class QueryStream:
             tokens = line.split()
             if not tokens:
                 continue
-            target = int(tokens[0])
+            target = round(float(tokens[0]))
             qid = tokens[1].split(':')[1]
             if not qid:
                 print >> sys.stderr, "Invalid line - skipping '", line, "'"

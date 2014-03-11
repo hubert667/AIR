@@ -31,20 +31,23 @@ if dataset == 'letor':
     path_train = 'Datasets/NP2004/Fold1/train.txt.gz'
     path_test = 'Datasets/NP2004/Fold1/test.txt.gz'
     path_validate = 'Datasets/NP2004/Fold1/vali.txt.gz'
+    click = '--p_click 0:0.0,1:1 --p_stop 0:0.0,1:0.0'
 if dataset == 'ms':
     feature_count = 136
     print '!!! only using Fold 1 data right now !!!'
     path_train = 'Datasets/MS-datasets/Fold1/train.txt'
     path_test = 'Datasets/NP2004/Fold1/train.txt'
     path_validate = 'Datasets/NP2004/Fold1/train.txt'
+    click = '--p_click 0:0.0,1:0.2,2:0.4,3:0.8,4:1.0 --p_stop 0:0.0,1:0.0,2:0.0,3:0.0,4:0.0'
 if dataset == 'yandex':
-    feature_count = 136
+    feature_count = 245
     path_train = 'Datasets/imat2009-datasets/imat2009_learning3.txt'
     path_test = 'Datasets/imat2009-datasets/imat2009_test3.txt'
     path_validate = None
+    click = '--p_click 0:0.0,1:0.2,2:0.4,3:0.8,4:1.0 --p_stop 0:0.0,1:0.0,2:0.0,3:0.0,4:0.0'
     
 print 'calculating rankers for the', dataset, 'dataset'
-Q = QueryRanker(path_train, feature_count)
+Q = QueryRanker(path_train, path_test, feature_count, click)
 Q.queryRanker()
  
 print "-- Creating clusters --"
