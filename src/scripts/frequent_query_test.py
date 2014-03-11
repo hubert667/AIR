@@ -8,9 +8,9 @@ import os
 from queryRankers import *
 import pickle
 
-#os.chdir("..")
-#os.chdir("..")
-#os.chdir("..")
+os.chdir("..")
+os.chdir("..")
+os.chdir("..")
 #feature_count=136
 rankerDict=queryRankers()
 #feature_count=245
