@@ -66,7 +66,6 @@ class QueryRanker():
         name=paths[1]
         pickle.dump(BestRanker, open( "QueryData/"+name+".data", "wb" ) )
         test = pickle.load( open( "QueryData/"+name+".data", "rb" ) )
-        print test.query_ranker.keys()
         print test.query_ranker.values()
 
 

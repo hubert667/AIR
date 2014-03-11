@@ -15,10 +15,10 @@ class queryRankers:
             
     def addInitRank(self,query,ranker):
 
-        if query in self.query_ranker.keys():
-                self.query_ranker[query].append(ranker)
+        if query in self.query_init_ranker.keys():
+                self.query_init_ranker[query].append(ranker)
         else:
-            self.query_ranker[query]=[ranker]
+            self.query_init_ranker[query]=[ranker]
             
     def addList(self,query,list):
 
