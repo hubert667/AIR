@@ -11,15 +11,24 @@ from queryRankers import *
 inputParser = argparse.ArgumentParser(description='Query-level personalisation')
 info = {
 'd' : 'Type of dataset, choice between "letor", "yandex" and "ms".',
-'k' : 'Set the number of clusters manually (default = determined by gap statistic).'
+'k' : 'Set the number of clusters manually (default = determined by gap statistic).',
+'i' : 'Set the number of iterations (default = 1000)',
+'m' : 'The mimimum frequency count for queries (default = 200)',
+'r' : 'The rankers per query (default = 5)'
 }
         
-# Required parameters
+### Required parameters
 inputParser.add_argument('-d', '--dataset', type=str, help=info['d'], required=True, choices=['letor', 'yandex','ms'])
     
-# Optional parameters
-inputParser.add_argument('-k', '--k', type=int, help=info['k'], required=False) #No k = gap statistic
-  
+### Optional parameters
+#No k = gap statistic
+inputParser.add_argument('-k', '--k', type=int, help=info['k'], required=False)
+#1000 to 10000 should be enough
+inputParser.add_argument('-i', '--iterations', type=int, help=info['i'], default=1000, required=False) 
+#derived from histogram
+inputParser.add_argument('-m', '--minfreqcount', type=int, help=info['m'], default=200, required=False) 
+inputParser.add_argument('-r', '--rankersperquery', type=int, help=info['r'], default=5, required=False) 
+
 arguments = inputParser.parse_args()
      
 print "-- Creating features --"
@@ -46,8 +55,11 @@ if dataset == 'yandex':
     path_validate = None
     click = '--p_click 0:0.0,1:0.2,2:0.4,3:0.8,4:1.0 --p_stop 0:0.0,1:0.0,2:0.0,3:0.0,4:0.0'
     
-print 'calculating rankers for the', dataset, 'dataset'
-Q = QueryRanker(path_train, path_test, feature_count, click)
+
+print 'Using the', dataset, 'dataset'
+
+Q = QueryRanker(path_train, path_test, feature_count, arguments.minfreqcount, arguments.iterations, arguments.rankersperquery, click)
+
 Q.queryRanker()
  
 print "-- Creating clusters --"

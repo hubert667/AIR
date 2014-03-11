@@ -9,15 +9,18 @@ from queryRankers import *
 
 class QueryRanker():
 
-    def __init__(self, path_train_dataset, path_test_dataset,feature_count_dataset, click):
+
+    def __init__(self, path_train_dataset, path_test_dataset, feature_count_dataset, min_freq_count, iterations, rankers_per_query, click_model):
+
         ''' Constructor '''
         self.path_train = path_train_dataset
         self.path_test=path_test_dataset
-        self.feature_count = feature_count_dataset    #136 for MS-dataset
-        self.minFreqCount = 200     #derived from histogram
-        self.iterationCount = 10    #1000 to 10000 should be enough
-        self.rankersPerQuery = 5
-        self.clickModel = click
+        self.feature_count = feature_count_dataset    
+        self.minFreqCount = min_freq_count
+        self.iterationCount = iterations
+        self.rankersPerQuery = rankers_per_query
+        self.clickModel = click_model
+
     
     def queryRanker(self):
         #Extract the high frequency queries from the training_queries
@@ -54,6 +57,7 @@ class QueryRanker():
                     c = user_model.get_clicks(l, q.get_labels())
                     s = learner.update_solution(c)
                     e = evaluation2.evaluate_all(s, test_queries)
+
                 BestRanker.add(highQuery.get_qid(),learner.get_solution().w)
                 BestRanker.addList(highQuery.get_qid(),l)
                 BestRanker.addEval(highQuery.get_qid(),e)
@@ -64,4 +68,5 @@ class QueryRanker():
         test = pickle.load( open( "QueryData/"+name+".data", "rb" ) )
         print test.query_ranker.keys()
         print test.query_ranker.values()
+
 
