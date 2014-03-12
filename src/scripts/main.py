@@ -45,8 +45,8 @@ if dataset == 'ms':
     feature_count = 136
     print '!!! only using Fold 1 data right now !!!'
     path_train = 'Datasets/MS-datasets/Fold1/train.txt'
-    path_test = 'Datasets/NP2004/Fold1/train.txt'
-    path_validate = 'Datasets/NP2004/Fold1/train.txt'
+    path_test = 'Datasets/MS-datasets/Fold1/test.txt'
+    path_validate = 'Datasets/MS-datasets/Fold1/vali.txt'
     click = '--p_click 0:0.0,1:0.2,2:0.4,3:0.8,4:1.0 --p_stop 0:0.0,1:0.0,2:0.0,3:0.0,4:0.0'
 if dataset == 'yandex':
     feature_count = 245
