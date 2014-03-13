@@ -45,8 +45,7 @@ class QueryRanker():
         #for every query learn the best ranker and save it to the dictionary
         iter=0
         for highQuery in HighFreqQueries:
-            sys.stdout.write('\r'+str(iter*100/len(HighFreqQueries))+"%")
-            sys.stdout.flush()
+            print str(iter*100/len(HighFreqQueries))+"%"
             iter=iter+1
             for i in xrange(self.rankersPerQuery):
                 learner = retrieval_system.ListwiseLearningSystem(self.feature_count, '-w random -c comparison.ProbabilisticInterleave -r ranker.ProbabilisticRankingFunction -s 3 -d 0.1 -a 0.01')
@@ -57,6 +56,7 @@ class QueryRanker():
                     c = user_model.get_clicks(l, q.get_labels())
                     s = learner.update_solution(c)
                     e = evaluation2.evaluate_all(s, test_queries)
+                
 
                 BestRanker.add(highQuery.get_qid(),learner.get_solution().w)
                 BestRanker.addList(highQuery.get_qid(),l)
