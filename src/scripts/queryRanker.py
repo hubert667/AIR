@@ -9,7 +9,7 @@ from queryRankers import *
 
 class QueryRanker():
 
-    def __init__(self, path_train_dataset, path_test_dataset, feature_count_dataset, min_freq_count, iterations, rankers_per_query, click_model):
+    def __init__(self, path_train_dataset, path_test_dataset, feature_count_dataset, min_freq_count, iterations, rankers_per_query, click_model, datasetType):
         ''' Constructor '''
         self.path_train = path_train_dataset
         self.path_test=path_test_dataset
@@ -18,7 +18,8 @@ class QueryRanker():
         self.iterationCount = iterations
         self.rankersPerQuery = rankers_per_query
         self.clickModel = click_model
-    
+        self.dataset = datasetType
+
     def queryRanker(self):
         #Extract the high frequency queries from the training_queries
         HighFreqQueries = []
@@ -59,8 +60,9 @@ class QueryRanker():
         #save the dictionary to a file ('bestRanker.p')
         paths=self.path_train.split('/')
         name=paths[1]
-        pickle.dump(BestRanker, open( "QueryData/"+name+".data", "wb" ) )
-        test = pickle.load( open( "QueryData/"+name+".data", "rb" ) )
+        #pickle.dump(BestRanker, open( "QueryData/"+name+".data", "wb" ) )
+        pickle.dump(BestRanker, open( "QueryData/"+self.dataset+".data", "wb" ) )
+        test = pickle.load( open( "QueryData/"+self.dataset+".data", "rb" ) )
         print test.query_ranker.values()
 
 
