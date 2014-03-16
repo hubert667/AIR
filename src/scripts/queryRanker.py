@@ -48,9 +48,9 @@ class QueryRanker():
         iter=0
         for highQuery in HighFreqQueries:
             ran=random.random()
-            if ran>self.threshold:
+            iter=iter+1
+            if ran<self.threshold:
                 print str(iter*100/len(HighFreqQueries))+"%"
-                iter=iter+1
                 for i in xrange(self.rankersPerQuery):
                     learner = retrieval_system.ListwiseLearningSystem(self.feature_count, '-w random -c comparison.ProbabilisticInterleave -r ranker.ProbabilisticRankingFunction -s 3 -d 0.1 -a 0.01')
                     BestRanker.addInitRank(highQuery.get_qid(),learner.get_solution().w)

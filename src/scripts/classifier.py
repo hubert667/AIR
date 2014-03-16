@@ -4,7 +4,7 @@ try:
     import include, copy, pickle
 except:
     pass
-import retrieval_system, environment, evaluation,comparison
+import retrieval_system, environment, evaluation,comparison,ranker
 import query as queryClass
 import ranker as rankerClass
 from clusterData import *
@@ -59,9 +59,11 @@ class Classifier:
             
         #X = [[0, 0], [1, 1]]
         #y = [0, 1]
+        X=np.array(X)
+        Y=np.array(Y)
         print "Training"
         clf = svm.SVC()
-        #clf.fit(X, y) 
+        clf.fit(X, Y) 
        
         if not os.path.exists("Classifier"):
             os.makedirs("Classifier")
@@ -72,6 +74,48 @@ class Classifier:
         name=parts[0]
         pickle.dump(clf, open( "Classifier/"+name+".data", "wb" ) )
         
+    def GetRanker(classifier, basic_ranker,query):
+        
+        max=10
+        basic_ranker.init_ranking(query)
+        docIds=basic_ranker.get_ranking()
+        i=0
+        results={}
+        for docId in docIds:
+            if i>max:
+                break
+            i=i+1
+            features=query.clusterData.clusterToRankerget_feature_vector(docId)
+            X=features
+            y=clf.predict(features)
+            if y in results:
+                results[y]=resuts[y]+1
+            else:
+                results[y]=1
+            
+        found_max=0
+        arg_max=0
+        for k in results:
+            if results[m]>found_max:
+                found_max=result[k]
+                arg_max=k
+                
+        rankerVec=clusterData.clusterToRanker[arg_max][0]
+        
+        ranker_tie="random"
+        feature_count=len(rankerVec)
+        ranker_args="3"
+        arg_str=""
+        sample_send="sample_unit_sphere"
+        iterations=100
+        
+        resultRanker=ranker.ProbabilisticRankingFunction(ranker_args,
+                                                ranker_tie,
+                                                feature_count,
+                                                sample=sample_send,
+                                                init=rankerVec)
+        
+        return resultRanker
         
        
     #print test.predict([[2., 2.]])

@@ -6,12 +6,32 @@ except:
 import retrieval_system, environment, evaluation, query
 from queryRankers import *
 import numpy
+import scipy.stats
 
 def euclidean_distance(a,b):
     aa=numpy.array(a)
     bb=numpy.array(b)
     dist = numpy.linalg.norm(aa-bb)
     return dist
+
+def list_distance(a,b):
+    aa = numpy.array(a)
+    bb = numpy.array(b)
+    tau, p_value = scipy.stats.kendalltau(aa,bb)
+    dist = 1 - tau
+    return dist
+
+def sumLists(dictOfList):
+    res=0
+    for localList in dictOfList:
+    res=res+sum(localList)
+    return res
+
+def lenLists(dictOfList):
+    res=0
+    for localList in dictOfList:
+    res=res+len(localList)
+    return res
 
 #os.chdir("..")
 #os.chdir("..")
@@ -43,5 +63,9 @@ for query in queryRankers.query_ranker:
     prevRank=rankers[0]
     
 
-print queryDistances.values()
+print "Average distance for the same query: "+str(sumLists(queryDistances.values())/float(lenLists(queryDistances.values())))
+print "Average distance for different queries: "+str(sum(distancesForDifferentQ.values())/float(len(distancesForDifferentQ)))
+print "Average distance ranker before and after learning: "+str(sumLists(distancesFirst.values())/float(lenLists(distancesFirst.values())))
+
+
 
