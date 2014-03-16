@@ -17,7 +17,7 @@ from sklearn import svm
 inputParser = argparse.ArgumentParser(description='Query-level personalisation')
 info = {
 'd' : 'Type of dataset, choice between "letor", "yandex" and "ms"',
-'r' : 'Run learning to rank, clustering, classification or clustering + classify',
+'r' : 'Run learning to rank, clustering, classification, clustering + classify, compare or all ',
 'i' : 'Set the number of iterations (default = 1000)',
 'm' : 'The mimimum frequency count for queries (default = 200)',
 'rq' : 'The rankers per query (default = 5)',
@@ -27,7 +27,7 @@ info = {
         
 ### Required parameters
 inputParser.add_argument('-d', '--dataset', type=str, help=info['d'], required=True, choices=['letor', 'yandex','ms'])
-inputParser.add_argument('-r', '--run', type=str, help=info['r'], required=True, choices=['learn', 'cluster', 'classify', 'clusterclassify', 'all'])
+inputParser.add_argument('-r', '--run', type=str, help=info['r'], required=True, choices=['learn', 'cluster', 'classify', 'clusterclassify', 'compare', 'all'])
 
     
 ### Optional parameters
@@ -62,7 +62,7 @@ if dataset == 'letor':
     feature_count = 64
     path_train = 'Datasets/LETORConcat/2004Concat/Fold1/train.txt'
     path_test = 'Datasets/LETORConcat/2004Concat/Fold1/test.txt'
-    path_validate = 'Datasets/NP2004/Fold1/vali.txt.gz'
+    path_validate = 'Datasets/LETORConcat/2004_np_dataset/Fold1/vali.txt.gz'
     click = '--p_click 0:0.0,1:1 --p_stop 0:0.0,1:0.0'
 if dataset == 'ms':
     feature_count = 136
@@ -89,7 +89,7 @@ if arguments.run == 'cluster' or arguments.run == 'clusterclassify' or arguments
     bestRankersFile = 'QueryData/'+dataset+'.data'
     KM = KMeans(arguments.fromrangek, arguments.torangek, bestRankersFile, dataset)
     (queryToCluster, clusterToRanker) = KM.runScript()
-    print 'queryToCluster', queryToCluster
+    #print 'queryToCluster', queryToCluster
 
 if arguments.run == 'classify' or arguments.run == 'clusterclassify' or arguments.run == 'all': 
     print "-- Classification --"
@@ -98,5 +98,11 @@ if arguments.run == 'classify' or arguments.run == 'clusterclassify' or argument
     rankerPath = None
     C = Classifier(clusterPath, path_train, rankerPath)
     C.Train()
+    
+if arguments.run == 'compare' : 
+    print "-- Comparison --"
+    classifierPath = "Classifier/"+dataset+".data"
+    basic_ranker_path="QueryData/generalRanker.data"
+    compare(path_validate,classifierPath,basic_ranker_path,click)
     
 print "-- Finished! --"
