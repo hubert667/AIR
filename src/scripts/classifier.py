@@ -117,8 +117,6 @@ class Classifier:
         
         return resultRanker
         
-       
-    #print test.predict([[2., 2.]])
-
-    #test= pickle.load( open("../../../QueryData/1000iterations/NP2004.data", "rb" ) )
-    #print len(test.query_ranker.values()[0][0])
+    clusterPath=
+    C = Classifier(clusterPath, path_train, rankerPath)
+    C.Train()
