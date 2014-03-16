@@ -185,7 +185,7 @@ class KMeans:
                                 if k in clusterDataObject.queryToCluster.keys():
                                     clusterDataObject.queryToCluster[k].append(i)
                                 else:
-                                    clusterDataObject.queryToCluster[k] = [str(i)]
+                                    clusterDataObject.queryToCluster[k] = [i]
                     elif self.queryRankerDict[k].tolist() == j:
                         clusterDataObject.queryToCluster[k] = i  
 
