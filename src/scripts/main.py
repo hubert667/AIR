@@ -1,38 +1,61 @@
-import argparse, sys, random, ast
-import retrieval_system, environment, evaluation, query
+import argparse, sys, random, ast, os, sys
+import retrieval_system, environment, evaluation, comparison
+import query as queryClass
+import ranker as rankerClass
+import numpy as np
+from kmeans import KMeans
 from queryRanker import QueryRanker
+from classifier import Classifier
 try:
     import include, copy, pickle
 except:
     pass
 from queryRankers import *
-
+from clusterData import *
+from sklearn import svm
 
 inputParser = argparse.ArgumentParser(description='Query-level personalisation')
 info = {
-'d' : 'Type of dataset, choice between "letor", "yandex" and "ms".',
-'k' : 'Set the number of clusters manually (default = determined by gap statistic).',
+'d' : 'Type of dataset, choice between "letor", "yandex" and "ms"',
+'r' : 'Run learning to rank, clustering, classification or clustering + classify',
 'i' : 'Set the number of iterations (default = 1000)',
 'm' : 'The mimimum frequency count for queries (default = 200)',
-'r' : 'The rankers per query (default = 5)'
+'rq' : 'The rankers per query (default = 5)',
+'fk' : 'Minimal number of clusters',
+'tk' : 'Max number of clusters'
 }
         
 ### Required parameters
 inputParser.add_argument('-d', '--dataset', type=str, help=info['d'], required=True, choices=['letor', 'yandex','ms'])
+inputParser.add_argument('-r', '--run', type=str, help=info['r'], required=True, choices=['learn', 'cluster', 'classify', 'clusterclassify', 'all'])
+
     
 ### Optional parameters
-#No k = gap statistic
-inputParser.add_argument('-k', '--k', type=int, help=info['k'], required=False)
+#min and max (default 2 & 5)
+inputParser.add_argument('-fk', '--fromrangek', type=int, help=info['fk'], default=2, required=False)
+inputParser.add_argument('-tk', '--torangek', type=int, help=info['tk'], default=5, required=False)
+
 #1000 to 10000 should be enough
 inputParser.add_argument('-i', '--iterations', type=int, help=info['i'], default=1000, required=False) 
-#derived from histogram
-inputParser.add_argument('-m', '--minfreqcount', type=int, help=info['m'], default=200, required=False) 
-inputParser.add_argument('-r', '--rankersperquery', type=int, help=info['r'], default=5, required=False) 
 
+#derived from histogram
+inputParser.add_argument('-m', '--minfreqcount', type=int, help=info['m'], default=200, required=False)
+
+inputParser.add_argument('-rq', '--rankersperquery', type=int, help=info['rq'], default=5, required=False) 
 arguments = inputParser.parse_args()
-     
-print "-- Creating features --"
+
+        
 dataset = arguments.dataset
+#info
+print 'Using the', arguments.dataset, 'dataset'
+print 'Going to run', arguments.run
+if arguments.run == 'learn' or arguments.run == 'all':
+    print 'Minimal frequency count:', arguments.minfreqcount
+    print 'Iterations:', arguments.iterations
+    print 'Rankers per query:', arguments.rankersperquery
+if arguments.run == 'cluster' or arguments.run == 'clusterclassify' or  arguments.run == 'all':
+    print 'Min number of clusters:', arguments.fromrangek
+    print 'Max number of clusters:', arguments.torangek
 
 #Setting the variables for each dataset
 if dataset == 'letor':
@@ -54,20 +77,26 @@ if dataset == 'yandex':
     path_test = 'Datasets/imat2009-datasets/imat2009_test3.txt'
     path_validate = None
     click = '--p_click 0:0.0,1:0.2,2:0.4,3:0.8,4:1.0 --p_stop 0:0.0,1:0.0,2:0.0,3:0.0,4:0.0'
+
+
+if arguments.run == 'learn' or arguments.run == 'all':
+    print "-- Learning to Rank --"
+    Q = QueryRanker(path_train, path_test, feature_count, arguments.minfreqcount, arguments.iterations, arguments.rankersperquery, click, dataset)
+    Q.queryRanker()
+
+if arguments.run == 'cluster' or arguments.run == 'clusterclassify' or arguments.run == 'all': 
+    print "-- Clustering --"
+    bestRankersFile = 'QueryData/'+dataset+'.data'
+    KM = KMeans(arguments.fromrangek, arguments.torangek, bestRankersFile, dataset)
+    (queryToCluster, clusterToRanker) = KM.runScript()
+    print 'queryToCluster', queryToCluster
+
+if arguments.run == 'classify' or arguments.run == 'clusterclassify' or arguments.run == 'all': 
+    print "-- Classification --"
+    clusterPath = "ClusterData/"+dataset+".data"
+    #ranker path is not used in the current classifier code...
+    rankerPath = None
+    C = Classifier(clusterPath, path_train, rankerPath)
+    C.Train()
     
-
-print 'Using the', dataset, 'dataset'
-
-Q = QueryRanker(path_train, path_test, feature_count, arguments.minfreqcount, arguments.iterations, arguments.rankersperquery, click)
-
-Q.queryRanker()
- 
-print "-- Creating clusters --"
-print "TODO"
-print "-- Classification --"
-print "TODO"
-k = arguments.k
-if k == None:
-    k = 'gap statistic'
-print 'k =', k
 print "-- Finished! --"
