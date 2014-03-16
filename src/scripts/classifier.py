@@ -55,7 +55,7 @@ class Classifier:
             for docId in docIds:
                 features=query.get_feature_vector(docId)
                 X.append(features)
-                Y.append(clusterData.queryToCluster[qid])
+                Y.append(clusterData.queryToCluster[qid][0])
             
         #X = [[0, 0], [1, 1]]
         #y = [0, 1]
@@ -117,6 +117,9 @@ class Classifier:
         
         return resultRanker
         
-    clusterPath=
-    C = Classifier(clusterPath, path_train, rankerPath)
-    C.Train()
+clusterPath = "../../../ClusterData/"+"letor"+".data"
+path_train = '../../../Datasets/LETORConcat/2004Concat/Fold1/train.txt'
+#ranker path is not used in the current classifier code...
+rankerPath = None
+C = Classifier(clusterPath, path_train, rankerPath)
+C.Train()
