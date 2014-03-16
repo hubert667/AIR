@@ -48,7 +48,7 @@ class QueryRanker():
         iter=0
         for highQuery in HighFreqQueries:
             ran=random.random()
-            if ran>threshold:
+            if ran>self.threshold:
                 print str(iter*100/len(HighFreqQueries))+"%"
                 iter=iter+1
                 for i in xrange(self.rankersPerQuery):
