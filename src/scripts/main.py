@@ -89,7 +89,7 @@ if arguments.run == 'cluster' or arguments.run == 'clusterclassify' or arguments
     bestRankersFile = 'QueryData/'+dataset+'.data'
     KM = KMeans(arguments.fromrangek, arguments.torangek, bestRankersFile, dataset)
     (queryToCluster, clusterToRanker) = KM.runScript()
-    print 'queryToCluster', queryToCluster
+    #print 'queryToCluster', queryToCluster
 
 if arguments.run == 'classify' or arguments.run == 'clusterclassify' or arguments.run == 'all': 
     print "-- Classification --"
