@@ -95,7 +95,7 @@ if arguments.run == 'classify' or arguments.run == 'clusterclassify' or argument
     print "-- Classification --"
     clusterPath = "ClusterData/"+dataset+".data"
     #ranker path is not used in the current classifier code...
-    rankerPath = None
+    rankerPath = "QueryData/generalRanker.data"
     C = Classifier(clusterPath, path_train, rankerPath)
     C.Train()
     
