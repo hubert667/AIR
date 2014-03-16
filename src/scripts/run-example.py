@@ -1,6 +1,6 @@
 import sys, random
 try:
-    import include
+    import include, pickle
 except:
     pass
 import retrieval_system, environment, evaluation, query
@@ -11,9 +11,15 @@ user_model = environment.CascadeUserModel('--p_click 0:0.0,1:1 --p_stop 0:0.0,1:
 evaluation = evaluation.NdcgEval()
 training_queries = query.load_queries(sys.argv[1], 64)
 test_queries = query.load_queries(sys.argv[2], 64)
-while True:
+i=0
+for i in range(10):
     q = training_queries[random.choice(training_queries.keys())]
     l = learner.get_ranked_list(q)
     c = user_model.get_clicks(l, q.get_labels())
     s = learner.update_solution(c)
+    print i
+    i=i+1
     print evaluation.evaluate_all(s, test_queries)
+
+pickle.dump(learner.ranker, open( "QueryData/"+"generalRanker"+".data", "wb" ) )
+
