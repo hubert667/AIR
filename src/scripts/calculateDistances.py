@@ -24,13 +24,13 @@ def list_distance(a,b):
 def sumLists(dictOfList):
     res=0
     for localList in dictOfList:
-    res=res+sum(localList)
+        res=res+sum(localList)
     return res
 
 def lenLists(dictOfList):
     res=0
     for localList in dictOfList:
-    res=res+len(localList)
+        res=res+len(localList)
     return res
 
 #os.chdir("..")

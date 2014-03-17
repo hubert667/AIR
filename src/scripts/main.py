@@ -1,5 +1,5 @@
 import argparse, sys, random, ast, os, sys
-import retrieval_system, environment, evaluation, comparison
+import retrieval_system, environment, evaluation, compare
 import query as queryClass
 import ranker as rankerClass
 import numpy as np
@@ -32,7 +32,7 @@ inputParser.add_argument('-r', '--run', type=str, help=info['r'], required=True,
     
 ### Optional parameters
 #min and max (default 2 & 5)
-inputParser.add_argument('-fk', '--fromrangek', type=int, help=info['fk'], default=2, required=False)
+inputParser.add_argument('-fk', '--fromrangek', type=int, help=info['fk'], default=3, required=False)
 inputParser.add_argument('-tk', '--torangek', type=int, help=info['tk'], default=5, required=False)
 
 #1000 to 10000 should be enough
@@ -62,7 +62,7 @@ if dataset == 'letor':
     feature_count = 64
     path_train = 'Datasets/LETORConcat/2004Concat/Fold1/train.txt'
     path_test = 'Datasets/LETORConcat/2004Concat/Fold1/test.txt'
-    path_validate = 'Datasets/LETORConcat/2004_np_dataset/Fold1/vali.txt.gz'
+    path_validate = 'Datasets/LETORConcat/2004Concat/Fold1/vali.txt'
     click = '--p_click 0:0.0,1:1 --p_stop 0:0.0,1:0.0'
 if dataset == 'ms':
     feature_count = 136
@@ -103,6 +103,7 @@ if arguments.run == 'compare' :
     print "-- Comparison --"
     classifierPath = "Classifier/"+dataset+".data"
     basic_ranker_path="QueryData/generalRanker.data"
-    compare(path_validate,classifierPath,basic_ranker_path,click)
+    clusterPath = "ClusterData/"+dataset+".data"
+    compare.compareSystems(path_validate,classifierPath,basic_ranker_path,clusterPath,click)
     
 print "-- Finished! --"
