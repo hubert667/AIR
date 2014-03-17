@@ -74,7 +74,7 @@ class Classifier:
         name=parts[0]
         pickle.dump(clf, open( "Classifier/"+name+".data", "wb" ) )
         
-    def GetRanker(classifier, basic_ranker,query):
+def getRanker(clf, basic_ranker,query,clusterData):
         
         max=10
         basic_ranker.init_ranking(query)
@@ -85,19 +85,20 @@ class Classifier:
             if i>max:
                 break
             i=i+1
-            features=query.clusterData.clusterToRankerget_feature_vector(docId)
+            features=query.get_feature_vector(docId)
             X=features
             y=clf.predict(features)
+            y=y[0]
             if y in results:
-                results[y]=resuts[y]+1
+                results[y]=results[y]+1
             else:
                 results[y]=1
             
         found_max=0
         arg_max=0
         for k in results:
-            if results[m]>found_max:
-                found_max=result[k]
+            if results[k]>found_max:
+                found_max=results[k]
                 arg_max=k
                 
         rankerVec=clusterData.clusterToRanker[arg_max][0]
@@ -109,17 +110,21 @@ class Classifier:
         sample_send="sample_unit_sphere"
         iterations=100
         
+        testWeights=str(rankerVec)
+        testWeights=testWeights.replace("[", "")
+        testWeights=testWeights.replace("]", "")
+        
         resultRanker=ranker.ProbabilisticRankingFunction(ranker_args,
                                                 ranker_tie,
                                                 feature_count,
                                                 sample=sample_send,
-                                                init=rankerVec)
+                                                init=testWeights)
         
         return resultRanker
         
-clusterPath = "../../../ClusterData/"+"letor"+".data"
-path_train = '../../../Datasets/LETORConcat/2004Concat/Fold1/train.txt'
+#clusterPath = "../../../ClusterData/"+"letor"+".data"
+#path_train = '../../../Datasets/LETORConcat/2004Concat/Fold1/train.txt'
 #ranker path is not used in the current classifier code...
-rankerPath = None
-C = Classifier(clusterPath, path_train, rankerPath)
-C.Train()
+#rankerPath = None
+#C = Classifier(clusterPath, path_train, rankerPath)
+#C.Train()
