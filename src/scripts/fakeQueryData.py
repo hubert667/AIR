@@ -9,6 +9,7 @@ import query as queryClass
 import ranker as rankerClass
 from clusterData import *
 import numpy as np
+from queryRankers import *
 from queryFeatures import *
 
 
@@ -28,7 +29,7 @@ class Fake:
         
         print "Loading Data"
         
-        training_queries = queryClass.load_queries(self.testQueries, feature_count)
+        training_queries = queryClass.load_queries(self.testQueries, self.feature_count)
         ranker=pickle.load( open( self.rankerPath ) )
         
         max=10 #max number of docs in the ranking 
@@ -39,7 +40,7 @@ class Fake:
         print "Loading training objects"
         i=0
         for query in training_queries:
-            print i*100/len(training_queries)
+            #print str(i*100/len(training_queries))+"%"
             i=i+1
             #query = training_queries.get_query(qid)
             ranker.init_ranking(query)
@@ -50,18 +51,20 @@ class Fake:
                     break
                 iter=iter+1
                 features=query.get_feature_vector(docId)
-                BestRanker.add(query.get_qid(),[float(i) for i in features])
-                BestRanker.addFeaturesToQid([float(i) for i in features],query.get_qid())
-
-        return BestRanker  
-        #pickle.dump(BestRanker, open( "../../../QueryData/"+self.dataset+".data", "wb" ) )
-        
+                BestRanker.add(query.get_qid(),features)
+                #print features
+                #BestRanker.addFeaturesToQid([float(i) for i in features],query.get_qid())
 
         
+        pickle.dump(BestRanker, open( "QueryData/"+self.dataset+".data", "wb" ) )
+          
 
+      
+"""
 dataset="letor"
 path_train = '../../../Datasets/LETORConcat/2004Concat/Fold1/train.txt'
 rankerPath = '../../../QueryData/generalRanker.data'
 feature_count=64
 C = Fake(dataset, path_train, rankerPath,feature_count)
 C.Save()
+"""

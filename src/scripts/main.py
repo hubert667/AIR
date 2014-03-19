@@ -13,11 +13,12 @@ except:
 from queryRankers import *
 from clusterData import *
 from sklearn import svm
+from fakeClustering import *
 
 inputParser = argparse.ArgumentParser(description='Query-level personalisation')
 info = {
 'd' : 'Type of dataset, choice between "letor", "yandex" and "ms"',
-'r' : 'Run learning to rank, clustering, classification, clustering + classify, compare,compareOne or all ',
+'r' : 'Run learning to rank, clustering, classification, clustering + classify, compare,compareOne,fake or all ',
 'i' : 'Set the number of iterations (default = 1000)',
 'm' : 'The mimimum frequency count for queries (default = 200)',
 'rq' : 'The rankers per query (default = 5)',
@@ -28,7 +29,7 @@ info = {
         
 ### Required parameters
 inputParser.add_argument('-d', '--dataset', type=str, help=info['d'], required=True, choices=['letor', 'yandex','ms'])
-inputParser.add_argument('-r', '--run', type=str, help=info['r'], required=True, choices=['learn', 'cluster', 'classify', 'clusterclassify', 'compare','compareOne', 'all'])
+inputParser.add_argument('-r', '--run', type=str, help=info['r'], required=True, choices=['learn', 'cluster', 'classify', 'clusterclassify', 'compare','compareOne', 'all','fake'])
 
     
 ### Optional parameters
@@ -112,6 +113,13 @@ if arguments.run == 'compare' :
     clusterPath = "ClusterData/"+dataset+".data"
     compare.compareSystems(path_validate,classifierPath,basic_ranker_path,clusterPath,click)
     
+if arguments.run=="fake":
+    
+    rankerPath = "QueryData/generalRanker.data"
+    bestRankersFile = 'QueryData/'+dataset+'.data'
+    ClusterQueryDoc(dataset,rankerPath,feature_count, path_train, path_test, arguments.iterations, click,clusterData,bestRankersFile,arguments.fromrangek, arguments.torangek)
+
+    
 if arguments.run == 'compareOne' : 
     print "-- Comparison --"
     classifierPath = "Classifier/"+dataset+".data"
@@ -121,3 +129,4 @@ if arguments.run == 'compareOne' :
     compareOneQuery.compareSystems(path_train,classifierPath,basic_ranker_path,clusterPath,bestRankersFile,click)
     
 print "-- Finished! --"
+

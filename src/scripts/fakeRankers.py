@@ -48,12 +48,12 @@ class GroupRanker():
             learner = retrieval_system.ListwiseLearningSystem(self.feature_count, '-w random -c comparison.ProbabilisticInterleave -r ranker.ProbabilisticRankingFunction -s 3 -d 0.1 -a 0.01')  
             for t in range(self.iterationCount):
                 features = random.choice(clusterData.clusterToRanker[cluster])
-                print queryData.ranker_query.keys()[0]
+                #print queryData.ranker_query.keys()[0]
                 qid=queryData.ranker_query[str(features)]
                 q = training_queries.get_query(qid)
                 iter=iter+1
                 if iter%1==0:
-                    print str(iter*100*(cluster+1)/self.iterationCount/len(clusterData.clusterToRanker.keys()))+"%"
+                    print str(iter*100/self.iterationCount/len(clusterData.clusterToRanker.keys()))+"%"
                 l = learner.get_ranked_list(q)
                 c = user_model.get_clicks(l, q.get_labels())
                 s = learner.update_solution(c)
