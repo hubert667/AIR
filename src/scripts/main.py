@@ -63,9 +63,9 @@ if arguments.run == 'cluster' or arguments.run == 'clusterclassify' or  argument
 #Setting the variables for each dataset
 if dataset == 'letor':
     feature_count = 64
-    path_train = 'Datasets/LETORConcat/2004Concat/Fold2/train.txt'
-    path_test = 'Datasets/LETORConcat/2004Concat/Fold2/test.txt'
-    path_validate = 'Datasets/LETORConcat/2004Concat/Fold2/vali.txt'
+    path_train = 'Datasets/LETORConcat/2004Concat/Fold1/train.txt'
+    path_test = 'Datasets/LETORConcat/2004Concat/Fold1/test.txt'
+    path_validate = 'Datasets/LETORConcat/2004Concat/Fold1/vali.txt'
     click = '--p_click 0:0.0,1:1 --p_stop 0:0.0,1:0.0'
 if dataset == 'ms':
     feature_count = 136
