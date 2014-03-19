@@ -28,7 +28,7 @@ def compareSystems(vali_queries,classifierPath,basic_ranker_path,clust_data_path
     ranker_args="3"
     arg_str=""
     sample_send="sample_unit_sphere"
-    iterations=1000
+    iterations=100
     
     rankers=[0]*2
     rankers[0]=basic_ranker

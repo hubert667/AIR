@@ -18,7 +18,7 @@ class KMeans:
     '''Gap statistics implementation from: http://datasciencelab.wordpress.com/2013/12/27/finding-the-k-in-k-means-clustering/'''
 
     '''To run from console use three arguments "bestRankersPickleFile.p" fromRangeK toRangeK  '''
-
+    #gap statistic
     def cluster_points(self, X, mu):
         clusters  = {}
         for x in X:
@@ -30,7 +30,7 @@ class KMeans:
                 clusters[bestmukey] = [x]
         return clusters
      
-     
+    #gap statistic
     def reevaluate_centers(self, mu, clusters):
         newmu = []
         keys = sorted(clusters.keys())
@@ -38,11 +38,11 @@ class KMeans:
             newmu.append(np.mean(clusters[k], axis = 0))
         return newmu
      
-     
+    #gap statistic
     def has_converged(self, mu, oldmu):
         return set([tuple(a) for a in mu]) == set([tuple(a) for a in oldmu])
      
-     
+    #gap statistic
     def find_centers(self, X, K):
         # Initialize to K random centers
         oldmu = random.sample(X, K)
@@ -57,7 +57,7 @@ class KMeans:
         return(mu, clusters)
 
 
-
+    #gap statisitc
     def init_board_gauss(self, N, k):
         n = float(N)/k
         X = []
@@ -74,19 +74,19 @@ class KMeans:
         X = np.array(X)[:N]
         return X
 
-
+    #gap statistic
     def Wk(self, mu, clusters):
         K = len(mu)
         return sum([np.linalg.norm(mu[i]-c)**2/(2*len(c)) \
                    for i in range(K) for c in clusters[i]])
 
-
+    #gap statistic
     def bounding_box(self, X):
         xmin, xmax = min(X,key=lambda a:a[0])[0], max(X,key=lambda a:a[0])[0]
         ymin, ymax = min(X,key=lambda a:a[1])[1], max(X,key=lambda a:a[1])[1]
         return (xmin,xmax), (ymin,ymax)
      
-
+    #gap statistic
     def gap_statistic(self, X):
         allClusters = []
         (xmin,xmax), (ymin,ymax) = self.bounding_box(X)
@@ -157,8 +157,9 @@ class KMeans:
 
     def runScript(self):#"bestRanker.p"  sys.argv[1]
         #commented out part is for test purposes
-        #data = np.vstack((rand(150,2) + np.array([.5,.5]),rand(150,2), rand(150,2) + np.array([2.5,2.5]), rand(150,2) + np.array([10.5,10.5])))
-        self.bestKClusterGroup1 = self.get_best_clusters(self.getData()) #list > list(cluster#) > np.array,np.array etc...
+        #data = np.vstack((random(150,2) + np.array([.5,.5]),random(150,2), random(150,2) + np.array([2.5,2.5]), rand(150,2) + np.array([10.5,10.5])))
+        data = self.getData()
+        self.bestKClusterGroup1 = self.get_best_clusters(data) #list > list(cluster#) > np.array,np.array etc...
         self.bestKClusterGroup2 = []
 
         #converting list > list(cluster#) > np.array (ranker),np.array etc... to list > list(cluster#-->index of list) > normal list(ranker),list etc...

@@ -1,5 +1,5 @@
 import argparse, sys, random, ast, os, sys
-import retrieval_system, environment, evaluation, compare
+import retrieval_system, environment, evaluation, compare, compareOneQuery
 import query as queryClass
 import ranker as rankerClass
 import numpy as np
@@ -17,17 +17,18 @@ from sklearn import svm
 inputParser = argparse.ArgumentParser(description='Query-level personalisation')
 info = {
 'd' : 'Type of dataset, choice between "letor", "yandex" and "ms"',
-'r' : 'Run learning to rank, clustering, classification, clustering + classify, compare or all ',
+'r' : 'Run learning to rank, clustering, classification, clustering + classify, compare,compareOne or all ',
 'i' : 'Set the number of iterations (default = 1000)',
 'm' : 'The mimimum frequency count for queries (default = 200)',
 'rq' : 'The rankers per query (default = 5)',
 'fk' : 'Minimal number of clusters',
-'tk' : 'Max number of clusters'
+'tk' : 'Max number of clusters',
+'c'  : 'the part of queries which will be processed. From 0 to 1. '
 }
         
 ### Required parameters
 inputParser.add_argument('-d', '--dataset', type=str, help=info['d'], required=True, choices=['letor', 'yandex','ms'])
-inputParser.add_argument('-r', '--run', type=str, help=info['r'], required=True, choices=['learn', 'cluster', 'classify', 'clusterclassify', 'compare', 'all'])
+inputParser.add_argument('-r', '--run', type=str, help=info['r'], required=True, choices=['learn', 'cluster', 'classify', 'clusterclassify', 'compare','compareOne', 'all'])
 
     
 ### Optional parameters
@@ -40,6 +41,8 @@ inputParser.add_argument('-i', '--iterations', type=int, help=info['i'], default
 
 #derived from histogram
 inputParser.add_argument('-m', '--minfreqcount', type=int, help=info['m'], default=200, required=False)
+
+inputParser.add_argument('-c', '--partOfQueries', type=float, help=info['c'], default=1, required=False)
 
 inputParser.add_argument('-rq', '--rankersperquery', type=int, help=info['rq'], default=5, required=False) 
 arguments = inputParser.parse_args()
@@ -60,9 +63,9 @@ if arguments.run == 'cluster' or arguments.run == 'clusterclassify' or  argument
 #Setting the variables for each dataset
 if dataset == 'letor':
     feature_count = 64
-    path_train = 'Datasets/LETORConcat/2004Concat/Fold1/train.txt'
-    path_test = 'Datasets/LETORConcat/2004Concat/Fold1/test.txt'
-    path_validate = 'Datasets/LETORConcat/2004Concat/Fold1/vali.txt'
+    path_train = 'Datasets/LETORConcat/2004Concat/Fold2/train.txt'
+    path_test = 'Datasets/LETORConcat/2004Concat/Fold2/test.txt'
+    path_validate = 'Datasets/LETORConcat/2004Concat/Fold2/vali.txt'
     click = '--p_click 0:0.0,1:1 --p_stop 0:0.0,1:0.0'
 if dataset == 'ms':
     feature_count = 136
@@ -77,11 +80,14 @@ if dataset == 'yandex':
     path_test = 'Datasets/imat2009-datasets/imat2009_test3.txt'
     path_validate = None
     click = '--p_click 0:0.0,1:0.2,2:0.4,3:0.8,4:1.0 --p_stop 0:0.0,1:0.0,2:0.0,3:0.0,4:0.0'
+if dataset == 'test':
+    path_train = 'Datasets/imat2009-datasets/imat2009_learning3.txt'
+    path_test = 'Datasets/imat2009-datasets/imat2009_test3.txt'    
 
 
 if arguments.run == 'learn' or arguments.run == 'all':
     print "-- Learning to Rank --"
-    Q = QueryRanker(path_train, path_test, feature_count, arguments.minfreqcount, arguments.iterations, arguments.rankersperquery, click, dataset)
+    Q = QueryRanker(path_train, path_test, feature_count, arguments.minfreqcount, arguments.iterations, arguments.rankersperquery, click, dataset,arguments.partOfQueries)
     Q.queryRanker()
 
 if arguments.run == 'cluster' or arguments.run == 'clusterclassify' or arguments.run == 'all': 
@@ -94,7 +100,7 @@ if arguments.run == 'cluster' or arguments.run == 'clusterclassify' or arguments
 if arguments.run == 'classify' or arguments.run == 'clusterclassify' or arguments.run == 'all': 
     print "-- Classification --"
     clusterPath = "ClusterData/"+dataset+".data"
-    #ranker path is not used in the current classifier code...
+    #ranker path is not used in the current classifier code...- FIXED
     rankerPath = "QueryData/generalRanker.data"
     C = Classifier(clusterPath, path_train, rankerPath)
     C.Train()
@@ -105,5 +111,13 @@ if arguments.run == 'compare' :
     basic_ranker_path="QueryData/generalRanker.data"
     clusterPath = "ClusterData/"+dataset+".data"
     compare.compareSystems(path_validate,classifierPath,basic_ranker_path,clusterPath,click)
+    
+if arguments.run == 'compareOne' : 
+    print "-- Comparison --"
+    classifierPath = "Classifier/"+dataset+".data"
+    basic_ranker_path="QueryData/generalRanker.data"
+    clusterPath = "ClusterData/"+dataset+".data"
+    bestRankersFile = 'QueryData/'+dataset+'.data'
+    compareOneQuery.compareSystems(path_train,classifierPath,basic_ranker_path,clusterPath,bestRankersFile,click)
     
 print "-- Finished! --"

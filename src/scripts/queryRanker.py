@@ -10,7 +10,7 @@ from queryRankers import *
 class QueryRanker():
 
 
-    def __init__(self, path_train_dataset, path_test_dataset, feature_count_dataset, min_freq_count, iterations, rankers_per_query, click_model, datasetType):
+    def __init__(self, path_train_dataset, path_test_dataset, feature_count_dataset, min_freq_count, iterations, rankers_per_query, click_model, datasetType,Threshold):
 
         ''' Constructor '''
         self.path_train = path_train_dataset
@@ -21,7 +21,7 @@ class QueryRanker():
         self.rankersPerQuery = rankers_per_query
         self.clickModel = click_model
         self.dataset = datasetType
-        self.threshold=0.2
+        self.threshold=Threshold
 
     
     def queryRanker(self):
