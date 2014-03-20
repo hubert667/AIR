@@ -114,11 +114,13 @@ if arguments.run == 'compare' :
     compare.compareSystems(path_validate,classifierPath,basic_ranker_path,clusterPath,click)
     
 if arguments.run=="fake":
-    
+    print "--Fake clustering and learning--"
     rankerPath = "QueryData/generalRanker.data"
     bestRankersFile = 'QueryData/'+dataset+'.data'
-    ClusterQueryDoc(dataset,rankerPath,feature_count, path_train, path_test, arguments.iterations, click,clusterData,bestRankersFile,arguments.fromrangek, arguments.torangek)
-
+    clusterPath = "ClusterData/"+dataset+".data"
+    ClusterQueryDoc(dataset,rankerPath,feature_count, path_train, path_test, arguments.iterations, click,clusterPath,bestRankersFile,arguments.fromrangek, arguments.torangek)
+    C = Classifier(clusterPath, path_train, rankerPath)
+    C.Train()
     
 if arguments.run == 'compareOne' : 
     print "-- Comparison --"
@@ -129,4 +131,3 @@ if arguments.run == 'compareOne' :
     compareOneQuery.compareSystems(path_train,classifierPath,basic_ranker_path,clusterPath,bestRankersFile,click)
     
 print "-- Finished! --"
-

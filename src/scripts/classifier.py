@@ -46,6 +46,7 @@ class Classifier:
         """
         X=[]
         Y=[]
+        max=100 #max number of docs in the ranking 
 
     #print clusterData.queryToCluster.keys()
     #print training_queries.keys()
@@ -54,10 +55,15 @@ class Classifier:
             query = training_queries.get_query(qid)
             ranker.init_ranking(query)
             docIds=ranker.get_ranking()
+            iter=0
             for docId in docIds:
+                if iter>max:
+                    break
                 features=query.get_feature_vector(docId)
                 X.append(features)
-                Y.append(clusterData.queryToCluster[qid][0])
+                Y.append(clusterData.queryToCluster[qid][iter])
+                
+                iter=iter+1
             
         #X = [[0, 0], [1, 1]]
         #y = [0, 1]

@@ -6,6 +6,7 @@ except:
 import retrieval_system, environment, evaluation
 import query as queryClass
 from queryRankers import *
+import numpy as np
 
 class GroupRanker():
 
@@ -44,21 +45,26 @@ class GroupRanker():
         print "Read in training and testing queries"
         #for every query learn the best ranker and save it to the dictionary
         iter=0
+        learner=[0]*len(clusterData.clusterToRanker.keys())
         for cluster in clusterData.clusterToRanker:
-            learner = retrieval_system.ListwiseLearningSystem(self.feature_count, '-w random -c comparison.ProbabilisticInterleave -r ranker.ProbabilisticRankingFunction -s 3 -d 0.1 -a 0.01')  
-            for t in range(self.iterationCount):
-                features = random.choice(clusterData.clusterToRanker[cluster])
-                #print queryData.ranker_query.keys()[0]
-                qid=queryData.ranker_query[str(features)]
-                q = training_queries.get_query(qid)
-                iter=iter+1
-                if iter%1==0:
-                    print str(iter*100/self.iterationCount/len(clusterData.clusterToRanker.keys()))+"%"
-                l = learner.get_ranked_list(q)
-                c = user_model.get_clicks(l, q.get_labels())
-                s = learner.update_solution(c)
-                #e = evaluation2.evaluate_all(s, test_queries)
-            clusterData.clusterToRanker[cluster]=[learner.get_solution().w]
+            learner[cluster] = retrieval_system.ListwiseLearningSystem(self.feature_count, '-w random -c comparison.ProbabilisticInterleave -r ranker.ProbabilisticRankingFunction -s 3 -d 0.1 -a 0.01')  
+        for t in range(self.iterationCount):
+            q = training_queries[random.choice(training_queries.keys())]
+            temp=(float(np.sum(clusterData.queryToCluster[q.get_qid()])))/(float(len(clusterData.queryToCluster[q.get_qid()])))
+            temp=int(temp+0.5)
+            cluster=temp
+            #cluster=clusterData.queryToCluster[q.get_qid()][0]
+            
+            iter=iter+1
+            if iter%200==0:
+                print str(iter*100/self.iterationCount)+"%"
+            l = learner[cluster].get_ranked_list(q)
+            c = user_model.get_clicks(l, q.get_labels())
+            s = learner[cluster].update_solution(c)
+            #e = evaluation2.evaluate_all(s, test_queries)
+        for cluster in clusterData.clusterToRanker:
+             clusterData.clusterToRanker[cluster]=[learner[cluster].get_solution().w.tolist()]
+      
             
         #save the dictionary to a file ('bestRanker.p')
         paths=self.path_train.split('/')
@@ -66,7 +72,7 @@ class GroupRanker():
         #pickle.dump(BestRanker, open( "QueryData/"+name+".data", "wb" ) )
         pickle.dump(clusterData, open( "ClusterData/"+self.dataset+".data", "wb" ) )
 
-
+"""
 dataset="letor"
 path_train = 'Datasets/LETORConcat/2004Concat/Fold1/train.txt'
 path_test = 'Datasets/LETORConcat/2004Concat/Fold1/test.txt'
@@ -77,3 +83,4 @@ click = '--p_click 0:0.0,1:1 --p_stop 0:0.0,1:0.0'
 iterations=10
 g=GroupRanker(path_train,path_test,64,iterations,click,dataset,clusterPath,queryData)
 g.groupRanker()
+"""

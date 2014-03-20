@@ -32,7 +32,7 @@ class Fake:
         training_queries = queryClass.load_queries(self.testQueries, self.feature_count)
         ranker=pickle.load( open( self.rankerPath ) )
         
-        max=10 #max number of docs in the ranking 
+        max=100 #max number of docs in the ranking 
         
         #print clusterData.queryToCluster.keys()
         #print training_queries.keys()

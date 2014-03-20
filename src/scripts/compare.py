@@ -38,7 +38,8 @@ def compareSystems(vali_queries,classifierPath,basic_ranker_path,clust_data_path
     training_queries = query.load_queries(vali_queries, feature_count)
     compar_interleave=ProbabilisticInterleave(None)
 
-    first_win=0
+    second_win=0
+    second_win_or_e=0
     print "-Calculating-"
     for i in range(iterations):
         if i%(iterations/10)==0:
@@ -48,14 +49,17 @@ def compareSystems(vali_queries,classifierPath,basic_ranker_path,clust_data_path
         l, a = compar_interleave.interleave(rankers[0], rankers[1], q, 10)
         c = user_model.get_clicks(l, q.get_labels())
         o = compar_interleave.infer_outcome(l, a, c, q)
-        if(o<0):
-            first_win+=1
+        if(o>0):
+            second_win+=1
+            second_win_or_e+=1
         elif(o==0):
             coin=random.random()
             if(coin>0.5):
-                first_win+=1
-    result_com=float(first_win)/float(iterations)
-    print "Basic ranker win rate:"+ str(result_com)
+                second_win_or_e+=1
+    result_com=float(second_win_or_e)/float(iterations)
+    result_win=float(second_win)/float(iterations)
+    print "Our ranker win rate (with random choice if result was equal):"+ str(result_com)
+    print "Our ranker win rate:"+ str(result_win)
     
 
     
