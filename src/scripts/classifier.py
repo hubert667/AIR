@@ -61,7 +61,7 @@ class Classifier:
                     break
                 features=query.get_feature_vector(docId)
                 X.append(features)
-                Y.append(clusterData.queryToCluster[qid][iter])
+                Y.append(clusterData.queryToCluster[qid][0])
                 
                 iter=iter+1
             
