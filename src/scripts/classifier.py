@@ -19,22 +19,21 @@ class Classifier:
     def __init__(self, clusterPath, queriesPath, ranker):
         self.clusterDataPath = clusterPath
         self.testQueries = queriesPath
-        self.rankerPath = None
+        self.rankerPath = ranker
 
     def Train(self):
         
         print "Loading Data"
         clusterData=pickle.load(open( self.clusterDataPath, "rb" ) )
-        clustersData = pickle.load( open( self.clusterDataPath, "rb" ) )
         feature_count=len(clusterData.clusterToRanker[0][0])
         training_queries = queryClass.load_queries(self.testQueries, feature_count)
-        #ranker = pickle.load( open( sys.argv[3], "rb" ) )
+        ranker=pickle.load( open( self.rankerPath ) )
         
+        """
         testWeights=str(clusterData.clusterToRanker[0][0])
         testWeights=testWeights.replace("[", "")
         testWeights=testWeights.replace("]", "")
         weights = np.array([float(num) for num in testWeights.split(",")])
-        print len(weights)
         ranker_tie="random"
         ranker_args="3"
         sample_send="sample_unit_sphere"
@@ -44,18 +43,27 @@ class Classifier:
                                                 feature_count,
                                                 sample=sample_send,
                                                 init=testWeights)
-        
+        """
         X=[]
         Y=[]
+        max=100 #max number of docs in the ranking 
+
+    #print clusterData.queryToCluster.keys()
+    #print training_queries.keys()
         print "Loading training objects"
         for qid in clusterData.queryToCluster:
             query = training_queries.get_query(qid)
             ranker.init_ranking(query)
             docIds=ranker.get_ranking()
+            iter=0
             for docId in docIds:
+                if iter>max:
+                    break
                 features=query.get_feature_vector(docId)
                 X.append(features)
                 Y.append(clusterData.queryToCluster[qid][0])
+                
+                iter=iter+1
             
         #X = [[0, 0], [1, 1]]
         #y = [0, 1]
