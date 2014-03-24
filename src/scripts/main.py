@@ -3,9 +3,10 @@ import retrieval_system, environment, evaluation, compare, compareOneQuery
 import query as queryClass
 import ranker as rankerClass
 import numpy as np
-from kmeans import KMeans
+from kmeansScipy import KMeans
 from queryRanker import QueryRanker
 from classifier import Classifier
+from calculateDistancesTest import *
 try:
     import include, copy, pickle
 except:
@@ -29,7 +30,7 @@ info = {
         
 ### Required parameters
 inputParser.add_argument('-d', '--dataset', type=str, help=info['d'], required=True, choices=['letor', 'yandex','ms'])
-inputParser.add_argument('-r', '--run', type=str, help=info['r'], required=True, choices=['learn', 'cluster', 'classify', 'clusterclassify', 'compare','compareOne', 'all','fake'])
+inputParser.add_argument('-r', '--run', type=str, help=info['r'], required=True, choices=['learn', 'cluster', 'classify', 'clusterclassify', 'compare','compareOne', 'all','fake','distance'])
 
     
 ### Optional parameters
@@ -130,4 +131,9 @@ if arguments.run == 'compareOne' :
     bestRankersFile = 'QueryData/'+dataset+'.data'
     compareOneQuery.compareSystems(path_train,classifierPath,basic_ranker_path,clusterPath,bestRankersFile,click)
     
+if arguments.run == 'distance':
+    print "--Distance--"
+    queryDataPath = "QueryData/letor.data"
+    calculateDistancesTest(queryDataPath, feature_count, path_train)
 print "-- Finished! --"
+
