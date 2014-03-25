@@ -19,7 +19,7 @@ from fakeClustering import *
 inputParser = argparse.ArgumentParser(description='Query-level personalisation')
 info = {
 'd' : 'Type of dataset, choice between "letor", "yandex" and "ms"',
-'r' : 'Run learning to rank, clustering, classification, clustering + classify, compare,compareOne,fake or all ',
+'r' : 'Run learning to rank, cluster, classify, clusterclassify, compare,compareOne,fake,distance or all ',
 'i' : 'Set the number of iterations (default = 1000)',
 'm' : 'The mimimum frequency count for queries (default = 200)',
 'rq' : 'The rankers per query (default = 5)',
@@ -129,7 +129,9 @@ if arguments.run == 'compareOne' :
     basic_ranker_path="QueryData/generalRanker.data"
     clusterPath = "ClusterData/"+dataset+".data"
     bestRankersFile = 'QueryData/'+dataset+'.data'
-    compareOneQuery.compareSystems(path_train,classifierPath,basic_ranker_path,clusterPath,bestRankersFile,click)
+    compareOneQuery.compareSystemsHist(path_train,classifierPath,basic_ranker_path,clusterPath,bestRankersFile,click)
+    compareOneQuery.compareSystemsHistDifferentQ(path_train,classifierPath,basic_ranker_path,clusterPath,bestRankersFile,click)
+
     
 if arguments.run == 'distance':
     print "--Distance--"
