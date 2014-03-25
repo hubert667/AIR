@@ -145,6 +145,8 @@ def compareSystemsHist(vali_queries,classifierPath,basic_ranker_path,clust_data_
             results.append(result_com)
 
     g=P.hist(results, bins = 10)
+    P.xlabel("The win rate of the ranker in comparison to the generic ranker")
+    P.ylabel("Number of rankers")
     P.show(g)
     
 def compareSystemsHistDifferentQ(vali_queries,classifierPath,basic_ranker_path,clust_data_path,data,click):
