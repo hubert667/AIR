@@ -130,7 +130,7 @@ if arguments.run == 'compareOne' :
     clusterPath = "ClusterData/"+dataset+".data"
     bestRankersFile = 'QueryData/'+dataset+'.data'
     compareOneQuery.compareSystemsHist(path_train,classifierPath,basic_ranker_path,clusterPath,bestRankersFile,click)
-    compareOneQuery.compareSystemsHistDifferentQ(path_train,classifierPath,basic_ranker_path,clusterPath,bestRankersFile,click)
+    compareOneQuery.compareSystemsHistDifferentQ(path_validate,classifierPath,basic_ranker_path,clusterPath,bestRankersFile,click)
 
     
 if arguments.run == 'distance':

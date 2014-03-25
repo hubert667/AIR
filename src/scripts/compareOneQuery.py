@@ -104,10 +104,8 @@ def compareSystemsHist(vali_queries,classifierPath,basic_ranker_path,clust_data_
     print "-Calculating-"
     
     ii=0
-    hist={}
-    hist[0.25]=0
-    hist[0.75]=0
-    hist[0.5]=0
+
+
     results=[]
     for qid in queryData.query_ranker.keys():
         print str(float(ii)*100/float(len(queryData.query_ranker.keys())))+"%"
@@ -145,15 +143,6 @@ def compareSystemsHist(vali_queries,classifierPath,basic_ranker_path,clust_data_
                         second_win+=1
             result_com=float(second_win)/float(iterations)
             results.append(result_com)
-            if result_com<0.25:
-                hist[0.25]+=1
-            elif result_com<0.75:
-                hist[0.5]+=1
-            else:
-                hist[0.75]+=1
-    #print "Number of times when our system has win rate 0-0.25:"+ str(hist[0.25])
-    #print "Number of times when our system has win rate 0.25-0.5:"+ str(hist[0.5])
-    #print "Number of times when our system has win rate 0.5-0.75:"+ str(hist[0.75])
 
     g=P.hist(results, bins = 10)
     P.show(g)
@@ -184,15 +173,12 @@ def compareSystemsHistDifferentQ(vali_queries,classifierPath,basic_ranker_path,c
     print "-Calculating-"
     
     ii=0
-    hist={}
-    hist[0.25]=0
-    hist[0.75]=0
-    hist[0.5]=0
+
     results=[]
     for qid in queryData.query_ranker.keys():
         print str(float(ii)*100/float(len(queryData.query_ranker.keys())))+"%"
         ii+=1
-        q=training_queries.get_query(qid)
+        #q=training_queries.get_query(qid)
         for val in queryData.query_ranker[qid]:
             test=val
             #test=queryData.query_ranker[q][0]
@@ -225,16 +211,7 @@ def compareSystemsHistDifferentQ(vali_queries,classifierPath,basic_ranker_path,c
                         second_win+=1
             result_com=float(second_win)/float(iterations)
             results.append(result_com)
-            if result_com<0.25:
-                hist[0.25]+=1
-            elif result_com<0.75:
-                hist[0.5]+=1
-            else:
-                hist[0.75]+=1
-    #print "Number of times when our system has win rate 0-0.25:"+ str(hist[0.25])
-    #print "Number of times when our system has win rate 0.25-0.5:"+ str(hist[0.5])
-    #print "Number of times when our system has win rate 0.5-0.75:"+ str(hist[0.75])
-
+            
     g=P.hist(results, bins = 10)
     P.show(g)
 
