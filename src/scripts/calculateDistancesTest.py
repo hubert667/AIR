@@ -71,7 +71,7 @@ class calculateDistancesTest:
         queryDistances={} # distances between pairs of rankers for the same query
         distancesForDifferentQ={} #distances between rankers for different query
         distancesFirst={} #distances between initial ranker and the ranker after training 
-        queryRankers = pickle.load( open( path, "rbdist = numpy.linalg.norm(aa-bb)" ) )
+        queryRankers = pickle.load( open( path ) )
         prevRank=[]
         for query in queryRankers.query_ranker:
             rankers=queryRankers.query_ranker[query]  
@@ -94,11 +94,11 @@ class calculateDistancesTest:
                 if(self.listOrEucl):
                       dist=self.list_distance(prevRank,rankers[0],query)
                 else:
-                      dist=self.euclidean_distance(prevRank,rankers[0])                
+                      dist=self.euclidean_distance(prevRank,rankers[0])
                 distancesForDifferentQ[query]=dist
             queryDistances[query]=distances
             distancesFirst[query]=distancesF
             prevRank=rankers[0]        
         print "Average distance for the same query: "+str(self.sumLists(queryDistances.values())/float(self.lenLists(queryDistances.values())))
-        print "Average distance for different queries: "+str(sum(distancesForDifferentQ.values())/float(self.lenLists(distancesForDifferentQ)))
+        print "Average distance for different queries: "+str(sum(distancesForDifferentQ.values())/float(len(distancesForDifferentQ)))
         print "Average distance ranker before and after learning: "+str(self.sumLists(distancesFirst.values())/float(self.lenLists(distancesFirst.values())))
