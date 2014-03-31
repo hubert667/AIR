@@ -54,6 +54,7 @@ class QueryRanker():
                     c = user_model.get_clicks(l, q.get_labels())
                     s = learner.update_solution(c)
                     e = evaluation2.evaluate_all(s, test_queries)
+
                 BestRanker.add(highQuery.get_qid(),learner.get_solution().w)
                 BestRanker.addList(highQuery.get_qid(),l)
                 BestRanker.addEval(highQuery.get_qid(),e)
