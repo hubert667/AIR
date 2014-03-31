@@ -145,8 +145,8 @@ def compareSystemsHist(vali_queries,classifierPath,basic_ranker_path,clust_data_
             results.append(result_com)
 
     g=P.hist(results, bins = 20,range=[0,1])
-    P.xlabel("The win rate of the ranker in comparison to the generic ranker")
-    P.ylabel("Number of rankers")
+    P.xlabel("The win rate of the ranker",fontsize=20)
+    P.ylabel("Number of rankers",fontsize=20)
     P.show(g)
     
 def compareSystemsHistDifferentQ(vali_queries,classifierPath,basic_ranker_path,clust_data_path,data,click):
@@ -215,8 +215,8 @@ def compareSystemsHistDifferentQ(vali_queries,classifierPath,basic_ranker_path,c
             results.append(result_com)
             
     g=P.hist(results, bins = 20,range=[0,1])
-    P.xlabel("The win rate of the ranker in comparison to the generic ranker")
-    P.ylabel("Number of rankers")
+    P.xlabel("The win rate of the ranker", fontsize=20)
+    P.ylabel("Number of rankers", fontsize=20)
     P.show(g)
 
     
