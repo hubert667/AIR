@@ -16,10 +16,11 @@ import numpy as np
 class Classifier:
 
     #rankerPath is never used in the code!!!
-    def __init__(self, clusterPath, queriesPath, ranker):
+    def __init__(self, clusterPath, queriesPath, ranker, iterationsNumber):
         self.clusterDataPath = clusterPath
         self.testQueries = queriesPath
         self.rankerPath = ranker
+        self.iterations = iterationsNumber
 
     def Train(self):
         
@@ -80,11 +81,11 @@ class Classifier:
         name=paths[len(paths)-1]
         parts=name.split('.')
         name=parts[0]
-        pickle.dump(clf, open( "Classifier/"+name+".data", "wb" ) )
+        pickle.dump(clf, open( "Classifier/"+name+str(self.iterations)+'compare/'+name+".data", "wb" ) )
         
 def getRanker(clf, basic_ranker,query,clusterData):
         
-        max=10
+        max=100
         basic_ranker.init_ranking(query)
         docIds=basic_ranker.get_ranking()
         i=0
@@ -130,9 +131,4 @@ def getRanker(clf, basic_ranker,query,clusterData):
         
         return resultRanker
         
-#clusterPath = "../../../ClusterData/"+"letor"+".data"
-#path_train = '../../../Datasets/LETORConcat/2004Concat/Fold1/train.txt'
-#ranker path is not used in the current classifier code...
-#rankerPath = None
-#C = Classifier(clusterPath, path_train, rankerPath)
-#C.Train()
+

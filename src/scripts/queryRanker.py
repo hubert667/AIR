@@ -10,6 +10,7 @@ from queryRankers import *
 class QueryRanker():
 
 
+
     def __init__(self, path_train_dataset, path_test_dataset, feature_count_dataset, min_freq_count, iterations, rankers_per_query, click_model, datasetType,Threshold):
 
         ''' Constructor '''
@@ -23,7 +24,6 @@ class QueryRanker():
         self.dataset = datasetType
         self.threshold=Threshold
 
-    
     def queryRanker(self):
         #Extract the high frequency queries from the training_queries
         HighFreqQueries = []
@@ -65,6 +65,7 @@ class QueryRanker():
                     BestRanker.add(highQuery.get_qid(),learner.get_solution().w)
                     BestRanker.addList(highQuery.get_qid(),l)
                     BestRanker.addEval(highQuery.get_qid(),e)
+
         #save the dictionary to a file ('bestRanker.p')
         paths=self.path_train.split('/')
         name=paths[1]
