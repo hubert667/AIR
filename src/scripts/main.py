@@ -1,5 +1,7 @@
 import argparse, sys, random, ast, os, sys
+
 import retrieval_system, environment, evaluation, compare, compareOneQuery
+
 import query as queryClass
 import ranker as rankerClass
 import numpy as np
@@ -21,6 +23,7 @@ info = {
 'd' : 'Type of dataset, choice between "letor", "yandex" and "ms"',
 'r' : 'Run learning to rank, cluster, classify, clusterclassify, compare,compareOne,fake,distance or all ',
 'i' : 'Set the number of iterations (default = 1000)',
+'ci' : 'Set the number of iterations that is going to be compared on (1000 or 10000)',
 'm' : 'The mimimum frequency count for queries (default = 200)',
 'rq' : 'The rankers per query (default = 5)',
 'fk' : 'Minimal number of clusters',
@@ -39,6 +42,7 @@ inputParser.add_argument('-fk', '--fromrangek', type=int, help=info['fk'], defau
 inputParser.add_argument('-tk', '--torangek', type=int, help=info['tk'], default=5, required=False)
 
 #1000 to 10000 should be enough
+inputParser.add_argument('-ci', '--compareiterations', type=int, help=info['ci'], default=1000, required=True, choices=[1000, 10000]) 
 inputParser.add_argument('-i', '--iterations', type=int, help=info['i'], default=1000, required=False) 
 
 #derived from histogram
@@ -48,9 +52,9 @@ inputParser.add_argument('-c', '--partOfQueries', type=float, help=info['c'], de
 
 inputParser.add_argument('-rq', '--rankersperquery', type=int, help=info['rq'], default=5, required=False) 
 arguments = inputParser.parse_args()
-
-        
+       
 dataset = arguments.dataset
+compareiterations = arguments.compareiterations
 #info
 print 'Using the', arguments.dataset, 'dataset'
 print 'Going to run', arguments.run
@@ -94,19 +98,36 @@ if arguments.run == 'learn' or arguments.run == 'all':
 
 if arguments.run == 'cluster' or arguments.run == 'clusterclassify' or arguments.run == 'all': 
     print "-- Clustering --"
-    bestRankersFile = 'QueryData/'+dataset+'.data'
-    KM = KMeans(arguments.fromrangek, arguments.torangek, bestRankersFile, dataset)
+    bestRankersFile = 'QueryData/'+dataset+str(compareiterations)+'/'+dataset+'.data'
+    KM = KMeans(arguments.fromrangek, arguments.torangek, bestRankersFile, dataset, compareiterations)
     (queryToCluster, clusterToRanker) = KM.runScript()
     #print 'queryToCluster', queryToCluster
 
 if arguments.run == 'classify' or arguments.run == 'clusterclassify' or arguments.run == 'all': 
     print "-- Classification --"
-    clusterPath = "ClusterData/"+dataset+".data"
-    #ranker path is not used in the current classifier code...- FIXED
+    clusterPath = "ClusterData/"+dataset+str(compareiterations)+'compare/'+dataset+".data"
     rankerPath = "QueryData/generalRanker.data"
+    C = Classifier(clusterPath, path_train, rankerPath, compareiterations)
+    C.Train()
+    
+if arguments.run == 'compare' : 
+    print "-- Comparison --"
+    classifierPath = "Classifier/"+dataset+str(compareiterations)+'compare/'+dataset+".data"
+    basic_ranker_path="QueryData/generalRanker.data"
+    clusterPath = "ClusterData/"+dataset+str(compareiterations)+'compare/'+dataset+".data"
+    compare.compareSystems(path_validate,classifierPath,basic_ranker_path,clusterPath,click)
+    
+if arguments.run=="fake":
+    print "--Fake clustering and learning--"
+    rankerPath = "QueryData/generalRanker.data"
+    bestRankersFile = 'QueryData/'+dataset+'.data'
+    clusterPath = "ClusterData/"+dataset+".data"
+    rankerPath = "QueryData/generalRanker.data"
+    ClusterQueryDoc(dataset,rankerPath,feature_count, path_train, path_test, arguments.iterations, click,clusterPath,bestRankersFile,arguments.fromrangek, arguments.torangek)
     C = Classifier(clusterPath, path_train, rankerPath)
     C.Train()
     
+
 if arguments.run == 'compare' : 
     print "-- Comparison --"
     classifierPath = "Classifier/"+dataset+".data"
@@ -122,7 +143,7 @@ if arguments.run=="fake":
     ClusterQueryDoc(dataset,rankerPath,feature_count, path_train, path_test, arguments.iterations, click,clusterPath,bestRankersFile,arguments.fromrangek, arguments.torangek)
     C = Classifier(clusterPath, path_train, rankerPath)
     C.Train()
-    
+
 if arguments.run == 'compareOne' : 
     print "-- Comparison --"
     classifierPath = "Classifier/"+dataset+".data"

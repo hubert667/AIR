@@ -5,7 +5,7 @@ from clusterData import *
 
 class KMeans:
 
-    def __init__(self, fK, tK, filename, typeDataset):
+    def __init__(self, fK, tK, filename, typeDataset, iterationsNumber):
         self.queryRankerList = []
         self.bestKClusterGroup = []
         self.queryRankerDict = {}
@@ -14,6 +14,7 @@ class KMeans:
         self.bestRankersFile = filename
         self.bestK = 0
         self.dataset = typeDataset
+	self.iterations = iterationsNumber
 
     '''Gap statistics implementation from: http://datasciencelab.wordpress.com/2013/12/27/finding-the-k-in-k-means-clustering/'''
 
@@ -199,7 +200,7 @@ class KMeans:
         if not os.path.exists("ClusterData"):
             os.makedirs("ClusterData")
 
-        pickle.dump(clusterDataObject, open("ClusterData/"+self.dataset+".data", "wb"))
+        pickle.dump(clusterDataObject, open("ClusterData/"+self.dataset+str(self.iterations)+'compare/'+self.dataset+".data", "wb"))
         #pickle.dump(clusterDataObject, open("ClusterData/"+self.dataset+" k"+self.bestK+".data", "wb"))
         #pickle.dump(clusterDataObject.queryToCluster, open( "ClusterData/queryToClusterDict.data", "wb" ) )
         #pickle.dump(clusterDataObject.clusterToRanker, open( "ClusterData/clusterToRankerDict.data", "wb" ) )
@@ -213,3 +214,4 @@ class KMeans:
             for j in loadedFile[i]:
                 print j'''
         return clusterDataObject.queryToCluster, clusterDataObject.clusterToRanker
+

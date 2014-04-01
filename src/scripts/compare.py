@@ -40,6 +40,8 @@ def compareSystems(vali_queries,classifierPath,basic_ranker_path,clust_data_path
 
     second_win=0
     second_win_or_e=0
+    generic_win=0
+    equal = 0
     print "-Calculating-"
     for i in range(iterations):
         if i%(iterations/10)==0:
@@ -53,14 +55,21 @@ def compareSystems(vali_queries,classifierPath,basic_ranker_path,clust_data_path
             second_win+=1
             second_win_or_e+=1
         elif(o==0):
+            equal += 1
             coin=random.random()
             if(coin>0.5):
                 second_win_or_e+=1
+        else:
+            generic_win+=1
+
     result_com=float(second_win_or_e)/float(iterations)
     result_win=float(second_win)/float(iterations)
+    result_win_generic=float(generic_win)/float(iterations)
     print "Our ranker win rate (with random choice if result was equal):"+ str(result_com)
     print "Our ranker win rate:"+ str(result_win)
-    
+    print "Generic ranker win rate:"+ str(result_win_generic)
+    print "Number win ours:" + str(second_win)
+    print "Number win generic:" + str(generic_win)
+    print "Number equal:" + str(equal)
+    print "Total number iterations:" + str(iterations)
 
-    
-    
