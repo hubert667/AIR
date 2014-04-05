@@ -103,7 +103,7 @@ if arguments.run == 'cluster' or arguments.run == 'clusterclassify' or arguments
 
 if arguments.run == 'classify' or arguments.run == 'clusterclassify' or arguments.run == 'all': 
     print "-- Classification --"
-    clusterPath = "ClusterData/"+dataset+str(iterations)".data"
+    clusterPath = "ClusterData/"+dataset+str(iterations)+".data"
     rankerPath = "QueryData/generalRanker.data"
     C = Classifier(clusterPath, path_train, rankerPath, iterations)
     C.Train()

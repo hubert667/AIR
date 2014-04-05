@@ -81,7 +81,7 @@ class Classifier:
         name=paths[len(paths)-1]
         parts=name.split('.')
         name=parts[0]
-        pickle.dump(clf, open( "Classifier/"+name+str(self.iterations)+".data", "wb" ) )
+        pickle.dump(clf, open( "Classifier/"+name+".data", "wb" ) )
         
 def getRanker(clf, basic_ranker,query,clusterData):
         
