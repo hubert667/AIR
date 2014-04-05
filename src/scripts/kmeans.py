@@ -200,7 +200,7 @@ class KMeans:
         if not os.path.exists("ClusterData"):
             os.makedirs("ClusterData")
 
-        pickle.dump(clusterDataObject, open("ClusterData/"+self.dataset+str(self.iterations)+'compare/'+self.dataset+".data", "wb"))
+        pickle.dump(clusterDataObject, open("ClusterData/"+self.dataset+".data", "wb"))
         #pickle.dump(clusterDataObject, open("ClusterData/"+self.dataset+" k"+self.bestK+".data", "wb"))
         #pickle.dump(clusterDataObject.queryToCluster, open( "ClusterData/queryToClusterDict.data", "wb" ) )
         #pickle.dump(clusterDataObject.clusterToRanker, open( "ClusterData/clusterToRankerDict.data", "wb" ) )
