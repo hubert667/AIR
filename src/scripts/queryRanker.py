@@ -70,8 +70,8 @@ class QueryRanker():
         paths=self.path_train.split('/')
         name=paths[1]
         #pickle.dump(BestRanker, open( "QueryData/"+name+".data", "wb" ) )
-        pickle.dump(BestRanker, open( "QueryData/"+self.dataset+".data", "wb" ) )
-        test = pickle.load( open( "QueryData/"+self.dataset+".data", "rb" ) )
+        pickle.dump(BestRanker, open( "QueryData/"+self.dataset+str(self.iterationCount)+".data", "wb" ) )
+        test = pickle.load( open( "QueryData/"+self.dataset+str(self.iterationCount)+".data", "rb" ) )
         print test.query_ranker.values()
 
 

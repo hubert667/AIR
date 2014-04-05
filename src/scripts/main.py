@@ -23,7 +23,6 @@ info = {
 'd' : 'Type of dataset, choice between "letor", "yandex" and "ms"',
 'r' : 'Run learning to rank, cluster, classify, clusterclassify, compare,compareOne,fake,distance or all ',
 'i' : 'Set the number of iterations (default = 1000)',
-'ci' : 'Set the number of iterations that is going to be compared on (1000 or 10000)',
 'm' : 'The mimimum frequency count for queries (default = 200)',
 'rq' : 'The rankers per query (default = 5)',
 'fk' : 'Minimal number of clusters',
@@ -97,30 +96,30 @@ if arguments.run == 'learn' or arguments.run == 'all':
 
 if arguments.run == 'cluster' or arguments.run == 'clusterclassify' or arguments.run == 'all': 
     print "-- Clustering --"
-    bestRankersFile = 'QueryData/'+dataset+str(iterations)+'/'+dataset+'.data'
+    bestRankersFile = 'QueryData/'+dataset+str(iterations)+'.data'
     KM = KMeans(arguments.fromrangek, arguments.torangek, bestRankersFile, dataset, iterations)
     (queryToCluster, clusterToRanker) = KM.runScript()
     #print 'queryToCluster', queryToCluster
 
 if arguments.run == 'classify' or arguments.run == 'clusterclassify' or arguments.run == 'all': 
     print "-- Classification --"
-    clusterPath = "ClusterData/"+dataset+str(iterations)+'compare/'+dataset+".data"
+    clusterPath = "ClusterData/"+dataset+str(iterations)".data"
     rankerPath = "QueryData/generalRanker.data"
     C = Classifier(clusterPath, path_train, rankerPath, iterations)
     C.Train()
     
 if arguments.run == 'compare' : 
     print "-- Comparison --"
-    classifierPath = "Classifier/"+dataset+str(iterations)+'compare/'+dataset+".data"
+    classifierPath = "Classifier/"+dataset+str(iterations)+".data"
     basic_ranker_path="QueryData/generalRanker.data"
-    clusterPath = "ClusterData/"+dataset+str(iterations)+'compare/'+dataset+".data"
+    clusterPath = "ClusterData/"+dataset+str(iterations)+".data"
     compare.compareSystems(path_validate,classifierPath,basic_ranker_path,clusterPath,click)
     
 if arguments.run=="fake":
     print "--Fake clustering and learning--"
     rankerPath = "QueryData/generalRanker.data"
-    bestRankersFile = 'QueryData/'+dataset+'.data'
-    clusterPath = "ClusterData/"+dataset+".data"
+    bestRankersFile = 'QueryData/'+dataset+str(iterations)+'.data'
+    clusterPath = "ClusterData/"+dataset+str(iterations)+".data"
     rankerPath = "QueryData/generalRanker.data"
     ClusterQueryDoc(dataset,rankerPath,feature_count, path_train, path_test, arguments.iterations, click,clusterPath,bestRankersFile,arguments.fromrangek, arguments.torangek)
     C = Classifier(clusterPath, path_train, rankerPath)
@@ -129,26 +128,17 @@ if arguments.run=="fake":
 
 if arguments.run == 'compare' : 
     print "-- Comparison --"
-    classifierPath = "Classifier/"+dataset+".data"
+    classifierPath = "Classifier/"+dataset+str(iterations)+".data"
     basic_ranker_path="QueryData/generalRanker.data"
-    clusterPath = "ClusterData/"+dataset+".data"
+    clusterPath = "ClusterData/"+dataset+str(iterations)+".data"
     compare.compareSystems(path_validate,classifierPath,basic_ranker_path,clusterPath,click)
-    
-if arguments.run=="fake":
-    print "--Fake clustering and learning--"
-    rankerPath = "QueryData/generalRanker.data"
-    bestRankersFile = 'QueryData/'+dataset+'.data'
-    clusterPath = "ClusterData/"+dataset+".data"
-    ClusterQueryDoc(dataset,rankerPath,feature_count, path_train, path_test, arguments.iterations, click,clusterPath,bestRankersFile,arguments.fromrangek, arguments.torangek)
-    C = Classifier(clusterPath, path_train, rankerPath)
-    C.Train()
 
 if arguments.run == 'compareOne' : 
     print "-- Comparison --"
-    classifierPath = "Classifier/"+dataset+".data"
+    classifierPath = "Classifier/"+dataset+str(iterations)+".data"
     basic_ranker_path="QueryData/generalRanker.data"
-    clusterPath = "ClusterData/"+dataset+".data"
-    bestRankersFile = 'QueryData/'+dataset+'.data'
+    clusterPath = "ClusterData/"+dataset+str(iterations)+".data"
+    bestRankersFile = 'QueryData/'+dataset+str(iterations)+'.data'
     compareOneQuery.compareSystemsHist(path_train,classifierPath,basic_ranker_path,clusterPath,bestRankersFile,click)
     compareOneQuery.compareSystemsHistDifferentQ(path_validate,classifierPath,basic_ranker_path,clusterPath,bestRankersFile,click)
 
